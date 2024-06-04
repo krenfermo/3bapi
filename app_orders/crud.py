@@ -11,8 +11,7 @@ async def create_product(db: Session, producto:ProductSchema):
     try:
         new_product=None
         with db.begin():
-            print("entra crear")
-            print(type(producto))
+
     
             new_product = Products(product_sku=producto.product_sku,
                                    product_name=producto.product_name,
@@ -29,8 +28,8 @@ async def create_product(db: Session, producto:ProductSchema):
 
 async def get_product_by_sku(db: Session, sku: str):
     with db.begin():
-        print("llega sku")
+
         product=db.query(Products).filter(Products.product_sku == sku).first()
-        print(product)
+
     return product
 

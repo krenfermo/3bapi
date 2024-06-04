@@ -1,4 +1,4 @@
-from fastapi import Depends, FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException,status
 from pydantic import BaseModel
 from sqlalchemy.future import select
 from sqlalchemy.orm import Session
@@ -26,12 +26,12 @@ async def root():
 async def a_create_product(producto: ProductSchema, db: Session = Depends(get_db)):
 
     respuesta =  await get_product_by_sku(db, sku=producto.product_sku)
-    print(respuesta)
+
     if respuesta:
         raise HTTPException(status_code=400, detail="Producto existe")
-    print("pasa")
+
     response=await create_product(db=db, producto=producto)
-    print(response)
+
     return response
 
 
@@ -43,3 +43,20 @@ def Show_Products_Get(db: Session = Depends(get_db)):
     result = db.query(Products).offset(from_limit).limit(to_limit).all()   
     return result
 
+
+
+@app.patch('/api/inventories/product/{PRODUCT_ID}')
+def agregar_stock(PRODUCT_ID: str, producto: ProductInventarySchema, db: Session = Depends(get_db)):
+    product_query = db.query(Products).filter(Products.product_id == PRODUCT_ID)
+    db_product = product_query.first()
+
+    if not db_product:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f'Producto no encontrado con el ID: {PRODUCT_ID} ')
+    update_data = producto.dict(exclude_unset=True)
+  
+    db.query(Products).filter(Products.product_id == PRODUCT_ID).update({"product_stock": (Products.product_stock +update_data["stock_a_ingresar"])})
+    
+    db.commit()
+    db.refresh(db_product)
+    return db_product

@@ -11,3 +11,11 @@ class ProductSchema(BaseModel):
     class Config:
         orm_mode = True
         
+
+class ProductInventarySchema(BaseModel): 
+
+    stock_a_ingresar: int
+         
+    
+    class Config:
+        orm_mode = True
