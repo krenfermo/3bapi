@@ -13,8 +13,7 @@ from schemas import *
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
-
-        
+  
         
 @app.get("/")
 async def root():
@@ -22,7 +21,6 @@ async def root():
 
 
 @app.post("/api/products/", response_model=ProductSchema)
- 
 async def a_create_product(producto: ProductSchema, db: Session = Depends(get_db)):
 
     respuesta =  await get_product_by_sku(db, sku=producto.product_sku)
@@ -60,3 +58,26 @@ def agregar_stock(PRODUCT_ID: str, producto: ProductInventarySchema, db: Session
     db.commit()
     db.refresh(db_product)
     return db_product
+
+
+@app.post("/api/orders/", response_model=ProductSchema)
+async def comprar_producto(producto: OrderSchema, db: Session = Depends(get_db)):
+
+    respuesta =  await get_product_by_id(db, id=producto.product_id)
+
+    if respuesta:
+        response=await compra_product(db=db, producto=producto)
+        if response :
+            
+            return response
+        raise HTTPException(status_code=400, detail="NO HAY STOCK PARA ESA OPERACION")
+    raise HTTPException(status_code=400, detail="Producto NO existe")
+
+
+@app.get('/api/show_orders')
+def Show_Orders_Get(db: Session = Depends(get_db)):    
+    from_limit=0
+    to_limit=100
+    result = db.query(Orders).offset(from_limit).limit(to_limit).all()   
+
+    return result

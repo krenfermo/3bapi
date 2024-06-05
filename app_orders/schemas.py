@@ -15,7 +15,13 @@ class ProductSchema(BaseModel):
 class ProductInventarySchema(BaseModel): 
 
     stock_a_ingresar: int
-         
+    class Config:
+        orm_mode = True
+        
+        
+class OrderSchema(BaseModel): 
+    product_id : int
+    cantidad: int
     
     class Config:
         orm_mode = True

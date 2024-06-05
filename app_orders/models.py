@@ -2,7 +2,7 @@ from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Float,DateT
 from sqlalchemy.orm import relationship
 
 from database import Base
-
+import datetime
 
 class Products(Base):
     __tablename__ = "products"
@@ -18,7 +18,8 @@ class Orders(Base):
     __tablename__ = "products_orders"
 
     order_id = Column(Integer, primary_key=True, index=True)
-    order_date = Column(DateTime)
-    product_id = Column(String)
+    order_date = Column(DateTime, default=datetime.datetime.utcnow)
+    product_id = Column(Integer)
+    cantidad= Column(Integer)
 
  
