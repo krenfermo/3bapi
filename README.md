@@ -46,3 +46,8 @@ git clone https://github.com/krenfermo/3bapi.git
 docker build -t myapi3b .
 
 docker run -d --name contapi -p 8000:8000 myapi3b
+
+
+#API DOCS
+
+http://127.0.0.1:8000/docs
