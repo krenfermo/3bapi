@@ -1,8 +1,4 @@
 env/
-app_orders/__pycache__/crud.cpython-312.pyc
-app_orders/__pycache__/database.cpython-312.pyc
-app_orders/__pycache__/main.cpython-310.pyc
-app_orders/__pycache__/main.cpython-312.pyc
-app_orders/__pycache__/models.cpython-312.pyc
-app_orders/__pycache__/schemas.cpython-312.pyc
+
 .DS_Store
+app/__pycache__/*.pyc

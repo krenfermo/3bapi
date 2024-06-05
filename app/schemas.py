@@ -9,14 +9,14 @@ class ProductSchema(BaseModel):
          
     
     class Config:
-        orm_mode = True
+        from_attributes = True
         
 
 class ProductInventarySchema(BaseModel): 
 
     stock_a_ingresar: int
     class Config:
-        orm_mode = True
+        from_attributes = True
         
         
 class OrderSchema(BaseModel): 
@@ -24,4 +24,4 @@ class OrderSchema(BaseModel):
     cantidad: int
     
     class Config:
-        orm_mode = True
+        from_attributes = True

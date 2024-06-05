@@ -26,10 +26,23 @@ async def create_product(db: Session, producto:ProductSchema):
     return new_product
 
 
- 
+async def crea_order(db: Session, producto:OrderSchema):
+    new_order=None
+     
+    print(producto)
+    #update_data = producto.dict(exclude_unset=True)
+    new_order = Orders(product_id=producto["product_id"],
+                        cantidad=producto["cantidad"])
+    db.add(new_order)
+    #db.commit()
+    
+    print("pasa1")
+    return new_order
+                    
+                    
 async def compra_product(db: Session, producto:OrderSchema):
     try:
-         
+        new_order=None
         with db.begin():
 
             update_data = producto.dict(exclude_unset=True)
@@ -38,28 +51,22 @@ async def compra_product(db: Session, producto:OrderSchema):
             
            
             new_stock=db_product.product_stock - update_data["cantidad"]
-          
-            if new_stock>0 :
+            print(new_stock)
+            if new_stock>=0 :
                 
                 if new_stock<10:
                     print('el producto {} solo tiene {} en stock'.format(db_product.product_name,new_stock))
+                
                 db.query(Products).filter(Products.product_id == producto.product_id).update({"product_stock": (new_stock)})
                 
+                new_order=await crea_order(db,update_data)
+      
                 db.commit()
-                
-        
                 db.flush(db_product)
-                with db.begin():
-                    
-                        new_order=None
-                    
-                        new_order = Orders(product_id=update_data["product_id"],
-                                            cantidad=update_data["cantidad"])
-                        db.add(new_order)
-                        db.commit()
-                        db.flush(new_order)
-            
-            return False
+                db.flush(new_order)
+                print("pasa")
+            else:
+                return False
     except Exception as error:
         print("ERROR:",error)
     return db_product
